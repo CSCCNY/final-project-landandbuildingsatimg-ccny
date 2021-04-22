@@ -31,6 +31,10 @@
 
 - [Import Images Dataset to Tensorflow-Keras](https://www.tensorflow.org/tutorials/images/classification)
 
+- [Using flow from dataframe - Keras to create dataset for training](https://vijayabhaskar96.medium.com/tutorial-on-keras-imagedatagenerator-with-flow-from-dataframe-8bd5776e45c1)
+
+- [Masking Pipeline Github Library](https://github.com/HasnainRaz/SemSegPipeline)
+
 ### Papers for LULC Classification
 
 - [Best model performances](https://arxiv.org/abs/1709.00029)
