@@ -38,7 +38,7 @@
 - [Second Approch of using U-Net](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9220104)
 - [Third Approach SegNet](https://arxiv.org/pdf/1511.00561v2.pdf)
 - [Using Feature Pyramid - Multiclass](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Seferbekov_Feature_Pyramid_Network_CVPR_2018_paper.pdf)
-
+- [Best Segmentation Models - Our Third Approach](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6631649/)
 - [Dense Fusion Network](https://arxiv.org/ftp/arxiv/papers/1911/1911.08169.pdf)
 - 
 ## Github
