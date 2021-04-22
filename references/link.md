@@ -2,8 +2,8 @@
 
 - [Unet original research paper](https://arxiv.org/pdf/1505.04597.pdf)
 - [ResNet application](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Doshi_Residual_Inception_Skip_CVPR_2018_paper.pdf)
-- 
-###<span style="color:gray">Building Detection</span>
+
+### <span style="color:gray">Building Detection</span>
 
 - [Unet example tutorial 1](https://keras.io/examples/vision/oxford_pets_image_segmentation/)
 - [Unet example tutorial 2](https://www.kaggle.com/cjansen/u-net-in-keras)	
@@ -27,10 +27,14 @@
     - [1](https://medium.com/analytics-vidhya/feature-pyramid-network-for-image-classification-aa6dd22a4844)
     - [2](https://towardsdatascience.com/review-fpn-feature-pyramid-network-object-detection-262fc7482610)
 
+### <span style="color:gray">Land Classification</span>
+
+- [Import Images Dataset to Tensorflow-Keras](https://www.tensorflow.org/tutorials/images/classification)
+
 
 ## Github
 
-###<span style="color:gray">Building Detection</span>
+### <span style="color:gray">Building Detection</span>
 
 - [Unet model standalone](https://github.com/zizhaozhang/unet-tensorflow-keras/blob/master/model.py)
 - [Winning SpaceNet](https://github.com/SpaceNetChallenge/BuildingDetectors_Round2/tree/master/1-XD_XD)
@@ -38,7 +42,7 @@
 - [Urban Buildings](https://github.com/aatifjiwani/rgb-footprint-extract)
 - [Vgg16, Unet](https://github.com/BerlinRDT/roaddetection/blob/master/notebooks/networks/CNN_Lisa.ipynb)
 
-###<span style="color:gray">Land Classification</span>
+### <span style="color:gray">Land Classification</span>
 
 - [Sat road detection](https://github.com/BerlinRDT/roaddetection)
 
@@ -63,6 +67,7 @@
 - [Third Approach SegNet](https://arxiv.org/pdf/1511.00561v2.pdf)
 - [Using Feature Pyramid - Multiclass](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Seferbekov_Feature_Pyramid_Network_CVPR_2018_paper.pdf)
 
+- [Dense Fusion Network](https://arxiv.org/ftp/arxiv/papers/1911/1911.08169.pdf)
 
 ### Pre trained models
 - https://github.com/google-research/google-research/tree/master/remote_sensing_representations
