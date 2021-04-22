@@ -16,9 +16,13 @@
 ## Other
 - [TF satellite_imagery_example](https://notebook.community/google-research/google-research/building_detection/satellite_imagery_example)
 
-## Papers
+## Papers for LULC Classification
 
-
+- [Best model performances](https://arxiv.org/abs/1709.00029)
+- [First Approch Results and problems using ResNet50](https://vaasudevans.github.io/DeepLearning/Landuse%20Landcover%20Classification%20using%20ResNet50/LanduseLandcoverUsingResNet50.pdf)
+- [Second Approch of using U-Net](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9220104)
+- [Third Approach SegNet](https://arxiv.org/pdf/1511.00561v2.pdf)
 
 ## Pre trained models
 - https://github.com/google-research/google-research/tree/master/remote_sensing_representations
+
