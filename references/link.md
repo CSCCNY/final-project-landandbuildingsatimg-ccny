@@ -31,7 +31,16 @@
 
 - [Import Images Dataset to Tensorflow-Keras](https://www.tensorflow.org/tutorials/images/classification)
 
+### Papers for LULC Classification
 
+- [Best model performances](https://arxiv.org/abs/1709.00029)
+- [First Approch Results and problems using ResNet50](https://vaasudevans.github.io/DeepLearning/Landuse%20Landcover%20Classification%20using%20ResNet50/LanduseLandcoverUsingResNet50.pdf)
+- [Second Approch of using U-Net](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9220104)
+- [Third Approach SegNet](https://arxiv.org/pdf/1511.00561v2.pdf)
+- [Using Feature Pyramid - Multiclass](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Seferbekov_Feature_Pyramid_Network_CVPR_2018_paper.pdf)
+- [Best Segmentation Models - Our Third Approach](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6631649/)
+- [Dense Fusion Network](https://arxiv.org/ftp/arxiv/papers/1911/1911.08169.pdf)
+- 
 ## Github
 
 ### <span style="color:gray">Building Detection</span>
@@ -58,16 +67,6 @@
 
 ### Other
 - [TF satellite_imagery_example](https://notebook.community/google-research/google-research/building_detection/satellite_imagery_example)
-
-### Papers for LULC Classification
-
-- [Best model performances](https://arxiv.org/abs/1709.00029)
-- [First Approch Results and problems using ResNet50](https://vaasudevans.github.io/DeepLearning/Landuse%20Landcover%20Classification%20using%20ResNet50/LanduseLandcoverUsingResNet50.pdf)
-- [Second Approch of using U-Net](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9220104)
-- [Third Approach SegNet](https://arxiv.org/pdf/1511.00561v2.pdf)
-- [Using Feature Pyramid - Multiclass](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Seferbekov_Feature_Pyramid_Network_CVPR_2018_paper.pdf)
-
-- [Dense Fusion Network](https://arxiv.org/ftp/arxiv/papers/1911/1911.08169.pdf)
 
 ### Pre trained models
 - https://github.com/google-research/google-research/tree/master/remote_sensing_representations
