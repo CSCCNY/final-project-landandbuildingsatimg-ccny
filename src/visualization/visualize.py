@@ -1,4 +1,4 @@
-### History Functions
+### History Function
 def plot_history(history):
        
     acc = history.history['categorical_accuracy']
@@ -23,3 +23,21 @@ def plot_history(history):
     
     plt.show();
     
+## Displaying the results Function
+def display_results(y_true, y_preds, class_labels):
+    
+    results = pd.DataFrame(precision_recall_fscore_support(y_true, y_preds),
+                          columns=class_labels).T
+    results.rename(columns={0: 'Precision',
+                           1: 'Recall',
+                           2: 'F-Score',
+                           3: 'Support'}, inplace=True)
+    
+    conf_mat = pd.DataFrame(confusion_matrix(y_true, y_preds), 
+                            columns=class_labels,
+                            index=class_labels)    
+    f2 = fbeta_score(y_true, y_preds, beta=2, average='micro')
+    accuracy = accuracy_score(y_true, y_preds)
+    print(f"Accuracy: {accuracy}")
+    print(f"Global F2 Score: {f2}")    
+    return results, conf_mat
