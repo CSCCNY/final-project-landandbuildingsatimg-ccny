@@ -44,7 +44,7 @@
 - [Using Feature Pyramid - Multiclass](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Seferbekov_Feature_Pyramid_Network_CVPR_2018_paper.pdf)
 - [Best Segmentation Models - Our Third Approach](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6631649/)
 - [Dense Fusion Network](https://arxiv.org/ftp/arxiv/papers/1911/1911.08169.pdf)
-- 
+
 ## Github
 
 ### <span style="color:gray">Building Detection</span>
@@ -55,16 +55,14 @@
 - [Urban Buildings](https://github.com/aatifjiwani/rgb-footprint-extract)
 - [Vgg16, Unet](https://github.com/BerlinRDT/roaddetection/blob/master/notebooks/networks/CNN_Lisa.ipynb)
 
+
 ### <span style="color:gray">Land Classification</span>
 
 - [Sat road detection](https://github.com/BerlinRDT/roaddetection)
-
 - [rgb-footprint-extract](https://github.com/aatifjiwani/rgb-footprint-extract)
-
 - [spacenet example](https://github.com/boggis30/SpaceNetUnet)
-
 - [Azure land classification](https://github.com/Azure/pixel_level_land_classification)
-
+- [VITA_Group](https://github.com/VITA-Group/GLNet)
 
 ### Kaggle
 - [EDA for sat images planet comp](https://www.kaggle.com/cc786537662/initial-eda-image-processing)
