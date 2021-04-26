@@ -13,8 +13,8 @@ def main(project_dir):
     
     
     input_path = str(project_dir) + '/data/raw/AOI_2_Vegas_Train'
-    output_path = str(project_dir) + '/data/processed/Vegas/train'
-    val_path = str(project_dir) + '/data/processed/Vegas/val'
+    output_path = str(project_dir) + '/data/interim/Vegas/train'
+    val_path = str(project_dir) + '/data/interim/Vegas/val'
     
     converter = DataConverter.SpaceNetDataConverter(input_path, output_path, 2, "Vegas")
     converter.convertAllToInput()
