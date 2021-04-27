@@ -4,6 +4,7 @@ from skimage.draw import polygon
 import numpy as np
 from tqdm import tqdm
 from glob import glob
+import cv2
 
 class SpaceNetDataConverter:
     """
@@ -62,9 +63,11 @@ class SpaceNetDataConverter:
             mask = mask.astype(np.uint8)
             image = (image * 255).astype(np.uint8)
             # save images
-            np.save(os.path.join(self.save_dir, "images", img_id), image)
+#             np.save(os.path.join(self.save_dir, "images", img_id), image)
+            cv2.imwrite(os.path.join(self.save_dir, "images", img_id+ ".png"), image)
             # save masks
-            np.save(os.path.join(self.save_dir, "masks", img_id + "_mask"), mask)
+#             np.save(os.path.join(self.save_dir, "masks", img_id + "_mask"), mask)
+            cv2.imwrite(os.path.join(self.save_dir, "masks", img_id + ".png"), mask)
 
         print("Finished!")
 
@@ -111,7 +114,8 @@ def train_val_split(root_dir, save_dir, train_percent):
 
     for img in tqdm(val_images):
         shutil.move(os.path.join(root_dir, "images", img), os.path.join(save_dir, "images"))
-        shutil.move(os.path.join(root_dir, "masks", img.replace(".npy", "_mask.npy")), os.path.join(save_dir, "masks"))
+#         shutil.move(os.path.join(root_dir, "masks", img.replace(".png", "_mask.png")), os.path.join(save_dir, "masks"))
+        shutil.move(os.path.join(root_dir, "masks", img), os.path.join(save_dir, "masks"))
 
 if __name__ == "__main__":
     """
