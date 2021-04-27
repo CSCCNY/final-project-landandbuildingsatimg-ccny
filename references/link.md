@@ -2,7 +2,9 @@
 
 - [Unet original research paper](https://arxiv.org/pdf/1505.04597.pdf)
 - [ResNet application](https://openaccess.thecvf.com/content_cvpr_2018_workshops/papers/w4/Doshi_Residual_Inception_Skip_CVPR_2018_paper.pdf)
-
+- displaying convolutional layer images
+    - [1](https://towardsdatascience.com/visualizing-intermediate-activation-in-convolutional-neural-networks-with-keras-260b36d60d0)
+    - [2](https://github.com/gabrielpierobon/cnnshapes/blob/master/README.md)
 ### <span style="color:gray">Building Detection</span>
 
 - [Unet example tutorial 1](https://keras.io/examples/vision/oxford_pets_image_segmentation/)
