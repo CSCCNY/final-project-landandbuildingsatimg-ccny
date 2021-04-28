@@ -2,7 +2,16 @@ import numpy as np
 
 
 def RGB_mapping_to_class(label):
-#   Convert RGB mask to categorical array.
+#     Convert RGB mask to categorical array.
+#     urban_land         [0 ,255 ,255]    --> 1
+#     agriculture_land   [255 ,255 ,0]    --> 2   
+#     rangeland          [255 ,0 ,255]    --> 3
+#     forest_land        [0 ,255 ,0]      --> 4
+#     water              [0 ,0 ,255]      --> 5
+#     barren_land        [255 ,255 ,255]  --> 6
+#     unknown            [0 ,0 ,0]        --> 0
+
+
     l, w = label.shape[0], label.shape[1]
     classmap = np.zeros(shape=(l, w))
     indices = np.where(np.all(label == (0, 255, 255), axis=-1))
