@@ -6,6 +6,7 @@
 - 00 - Copying Tutorials
 - 01 - Data Processing
 - 02 - Model Development
+- 03 - Validation
 
 ## Initials: 
 - Said Mejia - SM
