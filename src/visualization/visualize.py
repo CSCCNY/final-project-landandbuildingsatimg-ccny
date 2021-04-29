@@ -1,3 +1,7 @@
+import matplotlib
+from matplotlib.colors import ListedColormap
+
+
 ### History Function
 def plot_history(history):
        
@@ -41,3 +45,41 @@ def display_results(y_true, y_preds, class_labels):
     print(f"Accuracy: {accuracy}")
     print(f"Global F2 Score: {f2}")    
     return results, conf_mat
+
+
+
+def plot_label(mask, labels, col_dict):
+	# Let's also design our color mapping: 1s should be plotted in blue, 2s in red, etc...
+	# col_dict={1:"blue",
+	#           2:"red",
+	#           3:"orange",
+	#           4:"green",
+	#           5:"yellow",
+	#           6:"purple",
+	#           7:"grey"}
+	
+	# We create a colormar from our list of colors
+	cm = ListedColormap([col_dict[x] for x in col_dict.keys()])
+	
+	# Let's also define the description of each category : 1 (blue) is Sea; 2 (red) is burnt, etc... Order should be respected here ! Or using another dict maybe could help.
+	# labels = np.array(['urban_land','agriculture_land','rangeland','forest_land','water','barren_land','unknown'])
+	len_lab = len(labels)
+	
+	
+	# prepare normalizer
+	## Prepare bins for the normalizer
+	norm_bins = np.sort([*col_dict.keys()]) + 0.5
+	norm_bins = np.insert(norm_bins, 0, np.min(norm_bins) - 1.0)
+	print(norm_bins)
+	## Make normalizer and formatter
+	norm = matplotlib.colors.BoundaryNorm(norm_bins, len_lab, clip=True)
+	fmt = matplotlib.ticker.FuncFormatter(lambda x, pos: labels[norm(x)])
+	
+	# Plot our figure
+	fig,ax = plt.subplots()
+	im = ax.imshow(mask, cmap=cm, norm=norm)
+	
+	diff = norm_bins[1:] - norm_bins[:-1]
+	tickz = norm_bins[:-1] + diff / 2
+	cb = fig.colorbar(im, format=fmt, ticks=tickz)
+	return ax
