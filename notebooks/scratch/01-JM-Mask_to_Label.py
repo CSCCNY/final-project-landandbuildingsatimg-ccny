@@ -32,7 +32,7 @@ mask_generator = data_gen.flow_from_dataframe(dataframe=df2.loc[df2['split'] == 
                                             target_size=(img_height,img_width), 
                                             batch_size=batch_size)
 
-batch_n = 1
+batch_n = None
 slices = 16
 directory = '../../interim/Mask'
 MaskConverter.mask_to_label(mask_generator, directory, slices, img_height, batch_size, batch_n)
