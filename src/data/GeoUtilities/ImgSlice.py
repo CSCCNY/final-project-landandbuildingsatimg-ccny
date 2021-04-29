@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import logging   
+import cv2
 
 def split_image(image3, tile_size):
     image_shape = tf.shape(image3)
@@ -14,7 +15,7 @@ def unsplit_image(tiles4, image_shape):
     rowwise_tiles = tf.transpose(serialized_tiles, [1, 0, 2, 3])
     return tf.reshape(rowwise_tiles, [image_shape[0], image_shape[1], image_shape[2]])
 
-def slice_images(data_generator, mask_generator, slices, img_height, batch_size, batch_n = None):
+def slice_images(data_generator, mask_generator, directory, slices, img_height, batch_size, batch_n = None):
 # 	Slice images into specified # of slices.
 #   If batch_n = None slicing will be done in all the batches of the image generator. If batch_n = int slicing will be done in the first batch_n batches.
 
@@ -42,10 +43,10 @@ def slice_images(data_generator, mask_generator, slices, img_height, batch_size,
                 data_tiles = split_image(x[i,:,:,:], [tile_size, tile_size])
                 mask_tiles = split_image(m[i,:,:,:], [tile_size, tile_size])
                 for t in range(data_tiles.shape[0]):
-                    tf.keras.preprocessing.image.save_img(f'../Cropping_Test/Train_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          data_tiles[t,:,:,:], data_format=None, file_format=None, scale=True)
-                    tf.keras.preprocessing.image.save_img(f'../Cropping_Test/Mask_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          mask_tiles[t,:,:,:], data_format=None, file_format=None, scale=True)
+                    cv2.imwrite(f'{directory}/Data/Train_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
+                                                          data_tiles[t,:,:,:])
+                    cv2.imwrite(f'{directory}/Mask/Mask_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
+                                                          mask_tiles[t,:,:,:])
             logger.info(f'Just finished batch {batch_index}')
             batch_index = batch_index + 1
             
