@@ -95,7 +95,7 @@ def mask_to_label(mask_generator, directory, slices, img_height, batch_size, bat
             
     else:
         logger.info(f'It will run for all batches \n \n \n')
-        while batch_index <= data_generator.batch_index:
+        while batch_index <= mask_generator.batch_index:
             m = mask_generator.next()
             for i in range(batch_size):
                 mask_tiles =ImgSlice.split_image(m[i,:,:,:], [tile_size, tile_size])
