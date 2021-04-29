@@ -57,14 +57,13 @@ def plot_label(mask, labels, col_dict):
 	#           5:"yellow",
 	#           6:"purple",
 	#           7:"grey"}
-	
+	# Let's also define the description of each category : 1 (blue) is Sea; 2 (red) is burnt, etc... Order should be respected here ! Or  using another dict maybe could help.
+	# labels = np.array(['urban_land','agriculture_land','rangeland','forest_land','water','barren_land','unknown'])
+    
 	# We create a colormar from our list of colors
 	cm = ListedColormap([col_dict[x] for x in col_dict.keys()])
 	
-	# Let's also define the description of each category : 1 (blue) is Sea; 2 (red) is burnt, etc... Order should be respected here ! Or using another dict maybe could help.
-	# labels = np.array(['urban_land','agriculture_land','rangeland','forest_land','water','barren_land','unknown'])
 	len_lab = len(labels)
-	
 	
 	# prepare normalizer
 	## Prepare bins for the normalizer
