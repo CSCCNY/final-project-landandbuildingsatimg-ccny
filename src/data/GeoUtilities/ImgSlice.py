@@ -2,6 +2,8 @@ import tensorflow as tf
 import numpy as np
 import logging   
 import cv2
+from src.data.GeoUtilities import MaskConverter
+
 
 def split_image(image3, tile_size):
     image_shape = tf.shape(image3)
@@ -44,9 +46,9 @@ def slice_images(data_generator, mask_generator, directory, slices, img_height, 
                 mask_tiles = split_image(m[i,:,:,:], [tile_size, tile_size])
                 for t in range(data_tiles.shape[0]):
                     cv2.imwrite(f'{directory}/Data/Train_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          data_tiles[t,:,:,:])
+                                                          data_tiles[t,:,:,:].numpy())
                     cv2.imwrite(f'{directory}/Mask/Mask_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          mask_tiles[t,:,:,:])
+                                                          MaskConverter.RGB_mapping_to_class(mask_tiles[t,:,:,:].numpy()))
             logger.info(f'Just finished batch {batch_index}')
             batch_index = batch_index + 1
             
@@ -59,10 +61,10 @@ def slice_images(data_generator, mask_generator, directory, slices, img_height, 
                 data_tiles = split_image(x[i,:,:,:], [tile_size, tile_size])
                 mask_tiles = split_image(m[i,:,:,:], [tile_size, tile_size])
                 for t in range(data_tiles.shape[0]):
-                    tf.keras.preprocessing.image.save_img(f'../Cropping_Test/Train_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          data_tiles[t,:,:,:], data_format=None, file_format=None, scale=True)
-                    tf.keras.preprocessing.image.save_img(f'../Cropping_Test/Mask_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
-                                                          mask_tiles[t,:,:,:], data_format=None, file_format=None, scale=True)
+                    cv2.imwrite(f'{directory}/Data/Train_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
+                                                          data_tiles[t,:,:,:].numpy())
+                    cv2.imwrite(f'{directory}/Mask/Mask_Batch_{batch_index}_Image_{i}_Tile_{t}.png', 
+                                                          MaskConverter.RGB_mapping_to_class(mask_tiles[t,:,:,:].numpy()))
             logger.info(f'Just finished batch {batch_index}')
             batch_index = batch_index + 1
     logger.info(f'Slicing finished')
