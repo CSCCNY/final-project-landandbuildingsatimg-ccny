@@ -8,7 +8,7 @@ import cv2
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras import layers
 from tensorflow import keras
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import Sequence
 import datetime
 import time
@@ -125,7 +125,26 @@ def train_val_split(root_dir, save_dir, train_percent):
 #         shutil.move(os.path.join(root_dir, "masks", img.replace(".png", "_mask.png")), os.path.join(save_dir, "masks"))
         shutil.move(os.path.join(root_dir, "masks", img), os.path.join(save_dir, "masks"))
 
+
+def train_val_split_dataGlobe(root_dir, save_dir, train_percent):
     
+    if 'masks' not in os.listdir(save_dir):
+        os.mkdir(f"{save_dir}/masks")
+
+    if 'images' not in os.listdir(save_dir):
+        os.mkdir(f"{save_dir}/images")
+    
+    all_images = list(os.listdir(os.path.join(root_dir, "images")))
+    np.random.shuffle(all_images)
+
+    num_train = int(len(all_images) * train_percent)
+    val_images = all_images[num_train:]
+
+    for img in tqdm(val_images):
+        shutil.move(os.path.join(root_dir, "images", img), os.path.join(save_dir, "images"))
+#         shutil.move(os.path.join(root_dir, "masks", img.replace(".png", "_mask.png")), os.path.join(save_dir, "masks"))
+        shutil.move(os.path.join(root_dir, "masks", ('Mask' + img[5:])), os.path.join(save_dir, "masks"))
+
     
 class PrePixer(object):
     def __init__(self, img_dir, dump_dir, mode, chunk_size , img_size):

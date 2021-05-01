@@ -11,24 +11,28 @@ def main(project_dir):
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
     
-    input_path = str(project_dir) + '/data/raw/AOI_2_Vegas_Train'
+    input_path = str(project_dir) + '/data/interim/Cropped'
     
-    interim_train_path = str(project_dir) + '/data/interim/Vegas/train'
-    interim_val_path = str(project_dir) + '/data/interim/Vegas/val'
+    interim_train_path = str(input_path) + '/train'
+    interim_val_path = str(input_path) + '/val'
+    interim_test_path = str(input_path) + '/test'
     
-    processed_train_path = str(project_dir) + '/data/processed/Vegas/train'
-    processed_val_path = str(project_dir) + '/data/processed/Vegas/val'
+
+#     processed_train_path = str(project_dir) + '/data/processed/Vegas/train'
+#     processed_val_path = str(project_dir) + '/data/processed/Vegas/val'
     
-    converter = DataConverter.SpaceNetDataConverter(input_path, interim_train_path, 2, "Vegas")
-    converter.convertAllToInput()
-    DataConverter.train_val_split(interim_train_path, interim_val_path, 0.8)
+#     converter = DataConverter.SpaceNetDataConverter(input_path, interim_train_path, 2, "Vegas")
+#     converter.convertAllToInput()
+    DataConverter.train_val_split_dataGlobe(interim_train_path, interim_val_path, 0.8)
+    DataConverter.train_val_split_dataGlobe(interim_train_path, interim_test_path, 0.8)
     
     
-    pxer = PrePixer(interim_train_path,processed_train_path, mode="train", chunk_size=32 , img_size = (512,512))
-    pxer.pre_pixer()
     
-    pxer = PrePixer(interim_val_path,processed_val_path, mode="val", chunk_size=32 , img_size = (512,512))
-    pxer.pre_pixer()
+#     pxer = PrePixer(interim_train_path,processed_train_path, mode="train", chunk_size=32 , img_size = (512,512))
+#     pxer.pre_pixer()
+    
+#     pxer = PrePixer(interim_val_path,processed_val_path, mode="val", chunk_size=32 , img_size = (512,512))
+#     pxer.pre_pixer()
     
     
     print('Finished')
