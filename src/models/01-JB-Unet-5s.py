@@ -259,7 +259,7 @@ start = datetime.now()
 print("start: " ,start)
  
 
-history = model.fit(
+history = unet.fit(
     train_generator, 
     steps_per_epoch=len(train_generator), 
     epochs=EPOCHS, 
