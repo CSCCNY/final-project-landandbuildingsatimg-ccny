@@ -1,0 +1,14 @@
+#! /bin/bash
+
+#PBS -N NN_model
+#PBS -l walltime=400:00:00
+#PBS -l nodes=1:ppn=32
+#PBS -j oe
+#PBS -o NN_log
+
+## Puth path of python file below
+cd /home/hgamarro/DeepLearning/JB_space/src/models
+                                                     
+source /home/hgamarro/.bashrc
+
+python /home/hgamarro/DeepLearning/JB_space/src/models/01-JB-Unet-5s.py
