@@ -7,8 +7,8 @@ import time
 from IPython import display
 from tensorflow.keras.utils import Sequence
 from keras import backend as K
-import segmentation_models as sm
-'''sm.set_framework('tf.keras')
+'''import segmentation_models as sm
+sm.set_framework('tf.keras')
 import pydot
 import graphviz
 from keras.utils import plot_model'''
@@ -305,8 +305,6 @@ def generate_images(model, test_input, tar):
         plt.axis('off')
     plt.show()
 
-EPOCHS = 10
-
 model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
 checkpoint_dir = model_andor_weight_path+'logs/training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
@@ -355,8 +353,8 @@ if not os.path.isfile(model_andor_weight_path+"model_pix2pix_discriminator_base.
 
 
 def Fit(train_ds, epochs, test_ds):
-    bs2 = test_ds[0][0][:,:,:,:].shape[0]
-    bs1 = len(test_ds)
+    #bs2 = test_ds[0][0][:,:,:,:].shape[0]
+    #bs1 = len(test_ds)
     
     for epoch in range(epochs):
         start = time.time()
@@ -364,33 +362,32 @@ def Fit(train_ds, epochs, test_ds):
         print("start: " ,start1)
 
         #display.clear_output(wait=True)
-        for i in np.arange( bs1 ):
-            for j in np.arange( bs2 ):
-                generate_images( generator
+       # for i in np.arange( bs1 ):
+           # for j in np.arange( bs2 ):
+                #generate_images( generator
                                # ,tf.cast(test_ds[i][0][tf.newaxis ,j,:,:,:], tf.float32)
                                 #,tf.cast(test_ds[i][1][tf.newaxis ,j,:,:,:], tf.float32)
-                                ,test_ds[i][0][tf.newaxis ,j,...]
-                                ,test_ds[i][1][tf.newaxis ,j,...]
-                                        )
+                               # ,test_ds[i][0][tf.newaxis ,j,...]
+                               # ,test_ds[i][1][tf.newaxis ,j,...]
+                               #         )
                 
-                # Train
-                #tuple(input_image, target) in zip(train_ds[:][0][j,...]
-                #                               ,train_ds[:][1][j,...]):
-                    #tuple(ele) for ele in lst
-                for inp_mask in train_ds:
-                    for batch in zip(inp_mask[0] , inp_mask[1]):
-                        print('.', end='')
-                        train_step( epoch=j
-                                   , input_image = batch[0][tf.newaxis ,...]
-                                   , target = batch[1][tf.newaxis ,...]
-                                   #, input_image = tf.cast(input_image , tf.float32)#[tf.newaxis ,...]
-                                   #, target = tf.cast(target , tf.float32)#[tf.newaxis ,...]
+        # Train
+        #tuple(input_image, target) in zip(train_ds[:][0][j,...]
+        #                               ,train_ds[:][1][j,...]):
+            #tuple(ele) for ele in lst
+        for batch in train_ds:
+            for inp_targ in zip(batch[0] , batch[1]):
+                print('.', end='')
+                train_step( epoch=epoch
+                           , input_image = inp_targ[0][tf.newaxis ,...]
+                           , target = inp_targ[1][tf.newaxis ,...]
+                           #, input_image = tf.cast(input_image , tf.float32)#[tf.newaxis ,...]
+                           #, target = tf.cast(target , tf.float32)#[tf.newaxis ,...]
                                     )
-                    print("-finished a training batch-")
-                print("\n--------starting next validation image-")
-                checkpoint.save(file_prefix=checkpoint_prefix+"_valimg_"+str(i)+'_batch_'+str(j))
+            print("-finished a training batch-")
+    
+        checkpoint.save(file_prefix=checkpoint_prefix+"_epoch_"+str(epoch)
                     
-            print("\n-----------------------finished a validation batch-")
         print("\n---------------------------------------------Epoch: ", epoch)
         checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1))
         
@@ -402,6 +399,7 @@ def Fit(train_ds, epochs, test_ds):
         #if (epoch + 1) % 2 == 0:
             #checkpoint.save(file_prefix=checkpoint_prefix)
 
+EPOCHS = 150
 Fit(re_inp, EPOCHS, val_re_inp)
 
 
