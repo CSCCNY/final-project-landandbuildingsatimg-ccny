@@ -64,6 +64,7 @@ class DataGenerator(Sequence):
 
 out_train_data_dir = '/home/hgamarro/DeepLearning/HG_space/data/processed/Vegas/train'
 out_val_data_dir = '/home/hgamarro/DeepLearning/HG_space/data/processed/Vegas/val'
+out_val_data_dir = '/home/hgamarro/DeepLearning/HG_space/data/processed/Vegas/val'
 
 
 # ====================
