@@ -376,16 +376,15 @@ def Fit(train_ds, epochs, test_ds):
                             ,test_ds[i][0][tf.newaxis ,j,:,:,:]
                             ,test_ds[i][1][tf.newaxis ,j,:,:,:]
                                     )
-            print("-finished a training batch-")
-    
-        checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str(epoch*32) )
+            print("-finished a training batch-")    
+            checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str((epoch+1)*32) )
 
-    print("\n---------------------------------------------Epoch: ", epoch)
-    checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
+        print("\n---------------------------------------------Epoch: ", epoch)
+        checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
 
-    end = datetime.now()
-    print("end: " ,end)
-    print("\nTime Taken for epoch: %s" % (end-start1))
+        end = datetime.now()
+        print("end: " ,end)
+        print("\nTime Taken for epoch: %s" % (end-start1))
 
     # saving (checkpoint) the model every 20 epochs
     #if (epoch + 1) % 2 == 0:
