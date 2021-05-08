@@ -352,16 +352,16 @@ def train_step(input_image, target, epoch):
 def Fit(train_ds, epochs, test_ds):
     bs2 = train_ds[0][0][:,:,:,:].shape[0]
     bs1 = len(train_ds)
+    '''bs2_ = test_ds[0][0][:,:,:,:].shape[0]
+    bs1_ = len(test_ds)'''
     
     for epoch in range(epochs):
-        start = time.time()
-        start1 = datetime.now()
-        print("start: " ,start1)
+        #start1 = time.time()
+        start = datetime.now()
+        print("start: " ,start)
         
-        bs1_ = bs1-1
-        bs2_ = bs2-1
-        for batch in range( bs1_ ):        
-            for row in range( bs2_ ):
+        for batch in range( bs1 ):        
+            for row in range( bs2 ):
                 print('.' , row , end='')
                 img_masks = (train_ds[batch][0][row,...] 
                              ,train_ds[batch][1][row,...])
@@ -370,22 +370,24 @@ def Fit(train_ds, epochs, test_ds):
                                , input_image = img_masks[0][tf.newaxis ,...]
                                , target = img_masks[1][tf.newaxis ,...]
                                         )
-                                             )  
-            if epoch % 1 == 0:
-                checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch)+"_"+str(batch) )
-                #print("\n---------------------------------------------Epoch: ", epoch)
 
+           
             print("-finished a training batch-")
-            '''i=random.randint(0,bs1-1)
-            j=random.randint(0,bs2-1)
+            '''i=random.randint(0,bs1_)
+            j=random.randint(0,bs2_)
             generate_images( generator
                             ,test_ds[i][0][tf.newaxis ,j,:,:,:]
-                            ,test_ds[i][1][tf.newaxis ,j,:,:,:]'''
-           
-        #checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch) )
+                            ,test_ds[i][1][tf.newaxis ,j,:,:,:]''' 
+        #if batch % 20 == 0:
+        if (epoch+1) % 10 == 0:
+                checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
+            #print("\n---------------------------------------------Epoch: ", epoch)
+
         end = datetime.now()
         print("end: " ,end)
-        print("\nTime Taken for epoch: %s" % (end-start1))
+        print("\nTime Taken for epoch: %s" % (end-start))
+           
+    checkpoint.save(file_prefix=checkpoint_prefix'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
 
     # saving (checkpoint) the model every 20 epochs
     #if (epoch + 1) % 2 == 0:
