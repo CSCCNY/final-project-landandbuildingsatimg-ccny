@@ -370,7 +370,6 @@ def Fit(train_ds, epochs, test_ds):
                                , input_image = img_masks[0][tf.newaxis ,...]
                                , target = img_masks[1][tf.newaxis ,...]
                                         )
-
            
             print("-finished a training batch-")
             '''i=random.randint(0,bs1_)
@@ -380,14 +379,14 @@ def Fit(train_ds, epochs, test_ds):
                             ,test_ds[i][1][tf.newaxis ,j,:,:,:]''' 
         #if batch % 20 == 0:
         if (epoch+1) % 10 == 0:
-                checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
+            checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
             #print("\n---------------------------------------------Epoch: ", epoch)
 
         end = datetime.now()
         print("end: " ,end)
         print("\nTime Taken for epoch: %s" % (end-start))
            
-    checkpoint.save(file_prefix=checkpoint_prefix'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
+    checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
 
     # saving (checkpoint) the model every 20 epochs
     #if (epoch + 1) % 2 == 0:
