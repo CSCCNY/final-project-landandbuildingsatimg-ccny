@@ -370,19 +370,22 @@ def Fit(train_ds, epochs, test_ds):
                            , target = inp_targ[1][tf.newaxis ,...]
                                     )
                 
-            #i=random.randint(0,bs1)
-            #j=random.randint(0,bs2)
+            #i=random.randint(0,bs1-1)
+            #j=random.randint(0,bs2-1)
             #generate_images( generator
                             #,test_ds[i][0][tf.newaxis ,j,:,:,:]
                             #,test_ds[i][1][tf.newaxis ,j,:,:,:]
                                     #)
             print("-finished a training batch-")
     
-            checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str((epoch+1)*32) )
+            #if (epoch + 1) == 50:
+            #    checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str((epoch+1)*32) )
 
-        print("\n---------------------------------------------Epoch: ", epoch)
-        checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
+        if (epoch + 1) % 20 == 0:
+            checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
+        print("\n---------------------------------------------Epoch: ", epoch+1)
 
+    checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
     end = datetime.now()
     print("end: " ,end)
     print("\nTime Taken for epoch: %s" % (end-start1))
