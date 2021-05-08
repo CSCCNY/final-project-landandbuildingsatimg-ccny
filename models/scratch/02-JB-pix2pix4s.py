@@ -7,12 +7,13 @@ import time
 from IPython import display
 from tensorflow.keras.utils import Sequence
 from keras import backend as K
-import random as rand
-'''sm.set_framework('tf.keras')
-import segmentation_models as sm
+import random
+'''import segmentation_models as sm
+sm.set_framework('tf.keras')
 import pydot
 import graphviz
 from keras.utils import plot_model'''
+
 
 '''os.environ["KMP_BLOCKTIME"] = "1"
 os.environ["KMP_SETTINGS"] = "1"
@@ -110,10 +111,12 @@ val_re_inp= DataGenerator(val_partition
                           ,out_val_data_dir
                           , "val")
 
+inp3 =  re_inp[4][1][14,:,:,:]
+
 inp =  re_inp[4][0][14,:,:,:]
 
 OUTPUT_CHANNELS = 1
-#K.clear_session()
+K.clear_session()
 
 def downsample(filters, size, apply_batchnorm=True):
     initializer = tf.random_normal_initializer(0., 0.02)
@@ -132,12 +135,13 @@ def downsample(filters, size, apply_batchnorm=True):
 model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
 down_model = downsample(3, 4) 
 #uses mask as input
+
 down_result = down_model(tf.expand_dims(inp, 0))
 print (down_result.shape)
 down_model.save(model_andor_weight_path+"_down_model4.h5")
 down_model.summary()
 
-#K.clear_session()
+K.clear_session()
 
 def upsample(filters, size, apply_dropout=False):
     initializer = tf.random_normal_initializer(0., 0.02)
@@ -159,12 +163,13 @@ def upsample(filters, size, apply_dropout=False):
     return result
 
 up_model = upsample(3, 4)
+
 up_result = up_model(down_result)
 print (up_result.shape)
-up_model.save(model_andor_weight_path+"_up_model4.h5")
-up_model.summary()
+if os.path.isdir(model_andor_weight_path):
+    up_model.save(model_andor_weight_path+"_up_model4.h5")
 
-#K.clear_session()
+K.clear_session()
 
 def Generator():
     inputs = tf.keras.layers.Input(shape=[512, 512, 3])
@@ -217,15 +222,12 @@ def Generator():
     return tf.keras.Model(inputs=inputs, outputs=x)
 
 Generator().summary()
-
 generator = Generator()
+
 #tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
 generator.save(model_andor_weight_path+"_generator4.h5")
 gen_output = generator(inp[tf.newaxis, ...], training=False)
 #gen_output = Generator_loop_mask(inp)
-
-plt.imshow(gen_output[0, ...])
-print(gen_output.shape)
 
 LAMBDA = 100
 loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
@@ -240,7 +242,7 @@ def generator_loss(disc_generated_output, gen_output, target):
 
     return total_gen_loss, gan_loss, l1_loss
 
-#K.clear_session()
+K.clear_session()
 
 def Discriminator():
     initializer = tf.random_normal_initializer(0., 0.02)
@@ -280,11 +282,6 @@ discriminator.save(model_andor_weight_path+"_discriminator4.h5")
 
 disc_out = discriminator([inp[tf.newaxis, ...], gen_output], training=False)
 #disc_out = discriminator([inp, gen_output], training=False)
-plt.imshow(disc_out[0, ..., -1]#, vmin=-20, vmax=20
-    , cmap='RdBu_r'
-          )
-plt.colorbar()
-print(disc_out.shape)
 
 def discriminator_loss(disc_real_output, disc_generated_output):
     real_loss = loss_object(tf.ones_like(disc_real_output), disc_real_output)
@@ -313,14 +310,14 @@ def generate_images(model, test_input, tar):
         plt.axis('off')
     plt.show()
 
-model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
-checkpoint_dir = model_andor_weight_path+'logs/training_checkpoints'
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  discriminator_optimizer=discriminator_optimizer,
                                  generator=generator,
                                  discriminator=discriminator)
 
+model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
+checkpoint_dir = model_andor_weight_path+'logs/training_checkpoints'
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 log_dir=model_andor_weight_path+"logs/"
 summary_writer = tf.summary.create_file_writer(
     log_dir + "fit/" + datetime.now().strftime("%Y%m%d-%H%M%S"))
@@ -353,48 +350,48 @@ def train_step(input_image, target, epoch):
         tf.summary.scalar('disc_loss', disc_loss, step=epoch)
 
 def Fit(train_ds, epochs, test_ds):
-    bs2 = test_ds[0][0][:,:,:,:].shape[0]
-    bs1 = len(test_ds)
+    bs2 = train_ds[0][0][:,:,:,:].shape[0]
+    bs1 = len(train_ds)
     
     for epoch in range(epochs):
         start = time.time()
         start1 = datetime.now()
         print("start: " ,start1)
-                
-        # Train
-        for batch in train_ds:
-            for inp_targ in zip(batch[0] , batch[1]):
-                print('.', end='')
-                train_step( epoch=epoch
-                           , input_image = inp_targ[0][tf.newaxis ,...]
-                           , target = inp_targ[1][tf.newaxis ,...]
-                                    )
-                
-            #i=random.randint(0,bs1-1)
-            #j=random.randint(0,bs2-1)
-            #generate_images( generator
-                            #,test_ds[i][0][tf.newaxis ,j,:,:,:]
-                            #,test_ds[i][1][tf.newaxis ,j,:,:,:]
-                                    #)
+        
+        bs1_ = bs1-1
+        bs2_ = bs2-1
+        for batch in range( bs1_ ):        
+            for row in range( bs2_ ):
+                print('.' , row , end='')
+                img_masks = (train_ds[batch][0][row,...] 
+                             ,train_ds[batch][1][row,...])
+                if (epoch) % 1 == 0:                
+                    train_step( epoch=epoch
+                               , input_image = img_masks[0][tf.newaxis ,...]
+                               , target = img_masks[1][tf.newaxis ,...]
+                                        )
+                                             )  
+            if epoch % 1 == 0:
+                checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch)+"_"+str(batch) )
+                #print("\n---------------------------------------------Epoch: ", epoch)
+
             print("-finished a training batch-")
-    
-            #if (epoch + 1) == 50:
-            #    checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str((epoch+1)*32) )
-
-        if (epoch + 1) % 20 == 0:
-            checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
-        print("\n---------------------------------------------Epoch: ", epoch+1)
-
-    checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
-    end = datetime.now()
-    print("end: " ,end)
-    print("\nTime Taken for epoch: %s" % (end-start1))
+            '''i=random.randint(0,bs1-1)
+            j=random.randint(0,bs2-1)
+            generate_images( generator
+                            ,test_ds[i][0][tf.newaxis ,j,:,:,:]
+                            ,test_ds[i][1][tf.newaxis ,j,:,:,:]'''
+           
+        #checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch) )
+        end = datetime.now()
+        print("end: " ,end)
+        print("\nTime Taken for epoch: %s" % (end-start1))
 
     # saving (checkpoint) the model every 20 epochs
     #if (epoch + 1) % 2 == 0:
         #checkpoint.save(file_prefix=checkpoint_prefix)
 
-EPOCHS = 150
+EPOCHS = 100
 Fit(re_inp
     , EPOCHS
     , val_re_inp)
