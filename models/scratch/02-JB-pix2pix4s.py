@@ -350,7 +350,7 @@ def train_step(input_image, target, epoch):
         tf.summary.scalar('disc_loss', disc_loss, step=epoch)
 
 def Fit(train_ds, epochs, test_ds):
-    bs2 = train_ds[0][0][:,:,:,:].shape[0]
+    #bs2 = train_ds[0][0][:,:,:,:].shape[0]
     bs1 = len(train_ds)
     '''bs2_ = test_ds[0][0][:,:,:,:].shape[0]
     bs1_ = len(test_ds)'''
@@ -361,17 +361,18 @@ def Fit(train_ds, epochs, test_ds):
         print("start: " ,start)
         
         for batch in range( bs1 ):        
-            for row in range( bs2 ):
+            for row in range( train_ds[batch][0][...].shape[0] ):
                 print('.' , row , end='')
                 img_masks = (train_ds[batch][0][row,...] 
                              ,train_ds[batch][1][row,...])
-                if (epoch) % 1 == 0:                
-                    train_step( epoch=epoch
-                               , input_image = img_masks[0][tf.newaxis ,...]
-                               , target = img_masks[1][tf.newaxis ,...]
-                                        )
+                #if (epoch) % 1 == 0:                
+                train_step( epoch=epoch
+                           , input_image = img_masks[0][tf.newaxis ,...]
+                           , target = img_masks[1][tf.newaxis ,...]
+                                    )
            
-            print("-finished a training batch-" ,datetime.now() , end='\n')
+            print("-finished a training batch-"+str(epoch+1)+"_"+str(batch+1) ,'-' ,datetime.now() , end='\n')
+            
             '''i=random.randint(0,bs1_)
             j=random.randint(0,bs2_)
             generate_images( generator
@@ -392,7 +393,7 @@ def Fit(train_ds, epochs, test_ds):
     #if (epoch + 1) % 2 == 0:
         #checkpoint.save(file_prefix=checkpoint_prefix)
 
-EPOCHS = 100
+EPOCHS = 2
 Fit(re_inp
     , EPOCHS
     , val_re_inp)
