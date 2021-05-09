@@ -383,7 +383,7 @@ def Fit(train_ds, epochs, test_ds):
             #print("\n---------------------------------------------Epoch: ", epoch)
 
         end = datetime.now()
-        print("end: " ,end=end='\n')
+        print("end: " ,end='\n')
         print("\nTime Taken for epoch: %s" % (end-start))
            
     checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
