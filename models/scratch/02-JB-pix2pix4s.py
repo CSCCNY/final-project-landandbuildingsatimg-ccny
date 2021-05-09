@@ -371,7 +371,7 @@ def Fit(train_ds, epochs, test_ds):
                                , target = img_masks[1][tf.newaxis ,...]
                                         )
            
-            print("-finished a training batch-" ,datetime.now())
+            print("-finished a training batch-" ,datetime.now() , end='\n')
             '''i=random.randint(0,bs1_)
             j=random.randint(0,bs2_)
             generate_images( generator
@@ -383,7 +383,7 @@ def Fit(train_ds, epochs, test_ds):
             #print("\n---------------------------------------------Epoch: ", epoch)
 
         end = datetime.now()
-        print("end: " ,end)
+        print("end: " ,end=end='\n')
         print("\nTime Taken for epoch: %s" % (end-start))
            
     checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
