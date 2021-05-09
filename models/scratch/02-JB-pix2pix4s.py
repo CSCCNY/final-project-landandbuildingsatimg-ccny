@@ -371,15 +371,15 @@ def Fit(train_ds, epochs, test_ds):
                                , target = img_masks[1][tf.newaxis ,...]
                                         )
            
-            print("-finished a training batch-")
+            print("-finished a training batch-" ,datetime.now())
             '''i=random.randint(0,bs1_)
             j=random.randint(0,bs2_)
             generate_images( generator
                             ,test_ds[i][0][tf.newaxis ,j,:,:,:]
                             ,test_ds[i][1][tf.newaxis ,j,:,:,:]''' 
-        #if batch % 20 == 0:
-        if (epoch+1) % 10 == 0:
-            checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
+            if batch % 45 == 0:
+            #if (epoch+1) % 10 == 0:
+                checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
             #print("\n---------------------------------------------Epoch: ", epoch)
 
         end = datetime.now()
