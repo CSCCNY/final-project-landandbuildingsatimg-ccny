@@ -7,11 +7,19 @@ import time
 from IPython import display
 from tensorflow.keras.utils import Sequence
 from keras import backend as K
-import segmentation_models as sm
+import random as rand
 '''sm.set_framework('tf.keras')
+import segmentation_models as sm
 import pydot
 import graphviz
 from keras.utils import plot_model'''
+
+'''os.environ["KMP_BLOCKTIME"] = "1"
+os.environ["KMP_SETTINGS"] = "1"
+os.environ["KMP_AFFINITY"]= "granularity=fine,verbose,compact,1,0"
+os.environ["OMP_NUM_THREADS"]= "32"
+tf.config.threading.set_intra_op_parallelism_threads(32)
+tf.config.threading.set_inter_op_parallelism_threads(2)'''
 
 class DataGenerator(Sequence):
     def __init__(self, list_IDs,label_map , img_dir ,mode):
@@ -61,7 +69,6 @@ class DataGenerator(Sequence):
             y = np.load(y_file_path).astype('float32')
         return X, y
 
-
 out_train_data_dir = '/home/hgamarro/DeepLearning/HG_space/data/processed/Vegas/train'
 out_val_data_dir = '/home/hgamarro/DeepLearning/HG_space/data/processed/Vegas/val'
 
@@ -94,38 +101,19 @@ val_partition = [item for item in all_val_files if "image_file" in item]
 
 #re ,inp = load(PATH+'train/100.jpg')
 #flips mask and input image
-re_inp = DataGenerator(partition,image_label_map,out_train_data_dir, "train")
-val_re_inp= DataGenerator(val_partition,val_image_label_map,out_val_data_dir, "val")
+re_inp = DataGenerator(partition
+                       ,image_label_map
+                       ,out_train_data_dir
+                       , "train")
+val_re_inp= DataGenerator(val_partition
+                          ,val_image_label_map
+                          ,out_val_data_dir
+                          , "val")
 
-len(re_inp)
-
-for i in np.arange(len(re_inp)-88):
-    print( re_inp[i][1][:,:,:,:].shape )
-    print( re_inp[i][0][:,:,:,:].shape )
-
-re_inp[0][0][0,:,:,:].shape
-
-type(re_inp)
-
-inp3 =  re_inp[4][1][14,:,:,:]
-
-inp2 =  re_inp[4][0][14,:,:,:]
-
-type(inp2)
-
-inp = tf.cast(inp2, tf.float32)
-type(inp)
-
-'''#fig, axes = plt.subplots(1, 3)#, figsize=(16, 5))
-for a in np.arange(0,1):
-    rng = inp2[:,:,a]
-    rng = rng.reshape(rng.shape[0]*rng.shape[1])
-    plt.hist(rng, bins='auto')
-    plt.show'''
-
-type(inp)
+inp =  re_inp[4][0][14,:,:,:]
 
 OUTPUT_CHANNELS = 1
+#K.clear_session()
 
 def downsample(filters, size, apply_batchnorm=True):
     initializer = tf.random_normal_initializer(0., 0.02)
@@ -141,10 +129,15 @@ def downsample(filters, size, apply_batchnorm=True):
 
     return result
 
-down_model = downsample(3, 4) # check this out later about the error
+model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
+down_model = downsample(3, 4) 
 #uses mask as input
 down_result = down_model(tf.expand_dims(inp, 0))
 print (down_result.shape)
+down_model.save(model_andor_weight_path+"_down_model4.h5")
+down_model.summary()
+
+#K.clear_session()
 
 def upsample(filters, size, apply_dropout=False):
     initializer = tf.random_normal_initializer(0., 0.02)
@@ -168,26 +161,30 @@ def upsample(filters, size, apply_dropout=False):
 up_model = upsample(3, 4)
 up_result = up_model(down_result)
 print (up_result.shape)
+up_model.save(model_andor_weight_path+"_up_model4.h5")
+up_model.summary()
+
+#K.clear_session()
 
 def Generator():
     inputs = tf.keras.layers.Input(shape=[512, 512, 3])
 
     down_stack = [
-        downsample(256, 4, apply_batchnorm=False),  # (bs, 128, 128, 64)
+        downsample(64, 4, apply_batchnorm=False),  # (bs, 128, 128, 64)
         downsample(128, 4),  # (bs, 64, 64, 128)
         downsample(256, 4),  # (bs, 32, 32, 256)
-        downsample(128, 4),  # (bs, 16, 16, 512)
-        downsample(64, 4),  # (bs, 8, 8, 512)
-        downsample(64, 4),  # (bs, 4, 4, 512)
-        downsample(256, 4),  # (bs, 2, 2, 512)
+        downsample(512, 4),  # (bs, 16, 16, 512)
+        downsample(512, 4),  # (bs, 8, 8, 512)
+        #downsample(64, 4),  # (bs, 4, 4, 512)
+        downsample(512, 4),  # (bs, 2, 2, 512)
         downsample(512, 4),  # (bs, 1, 1, 512)
     ]
 
     up_stack = [
         upsample(512, 4, apply_dropout=True),  # (bs, 2, 2, 1024)
         upsample(512, 4, apply_dropout=True),  # (bs, 4, 4, 1024)
-        upsample(512, 4, apply_dropout=True),  # (bs, 8, 8, 1024)
-        upsample(512, 4),  # (bs, 16, 16, 1024)
+        #upsample(512, 4, apply_dropout=True),  # (bs, 8, 8, 1024)
+        upsample(512, 4, apply_dropout=True),  # (bs, 16, 16, 1024)
         upsample(256, 4),  # (bs, 32, 32, 512)
         upsample(128, 4),  # (bs, 64, 64, 256)
         upsample(64, 4),  # (bs, 128, 128, 128)
@@ -223,8 +220,12 @@ Generator().summary()
 
 generator = Generator()
 #tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
+generator.save(model_andor_weight_path+"_generator4.h5")
+gen_output = generator(inp[tf.newaxis, ...], training=False)
+#gen_output = Generator_loop_mask(inp)
 
-inp[tf.newaxis, ...].shape
+plt.imshow(gen_output[0, ...])
+print(gen_output.shape)
 
 LAMBDA = 100
 loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
@@ -240,6 +241,7 @@ def generator_loss(disc_generated_output, gen_output, target):
     return total_gen_loss, gan_loss, l1_loss
 
 #K.clear_session()
+
 def Discriminator():
     initializer = tf.random_normal_initializer(0., 0.02)
 
@@ -248,14 +250,14 @@ def Discriminator():
 
     x = tf.keras.layers.concatenate([inp, tar])  # (bs, 256, 256, channels*2)
 
-    down1 = downsample(256, 4)(x)  # (bs, 128, 128, 64)
-    down2 = downsample(128, 4)(down1)  # (bs, 64, 64, 128)
-    down3 = downsample(64, 4, False)(down2)  # (bs, 128, 128, 64)
-    down4 = downsample(128, 4)(down3)  # (bs, 64, 64, 128)
-    down5 = downsample(256, 4)(down4)  # (bs, 32, 32, 256)
-    down6 = downsample(512, 4)(down5)  # (bs, 32, 32, 256)
+    down1 = downsample(128, 4, False)(x)  # (bs, 128, 128, 64)
+   # down2 = downsample(128, 4)(down1)  # (bs, 64, 64, 128)
+    down3 = downsample(256, 4)(down1)  # (bs, 128, 128, 64)
+   # down4 = downsample(512, 4)(down3)  # (bs, 64, 64, 128)
+   # down5 = downsample(256, 4)(down4)  # (bs, 32, 32, 256)
+   # down6 = downsample(512, 4)(down5)  # (bs, 32, 32, 256)
 
-    zero_pad1 = tf.keras.layers.ZeroPadding2D()(down6)  # (bs, 34, 34, 256)
+    zero_pad1 = tf.keras.layers.ZeroPadding2D()(down3)  # (bs, 34, 34, 256)
     conv = tf.keras.layers.Conv2D(512, 4, strides=1,
                                 kernel_initializer=initializer,
                                 use_bias=False)(zero_pad1)  # (bs, 31, 31, 512)
@@ -266,17 +268,23 @@ def Discriminator():
 
     zero_pad2 = tf.keras.layers.ZeroPadding2D()(leaky_relu)  # (bs, 33, 33, 512)
 
-    last = tf.keras.layers.Conv2D(1, 4, strides=1,
+    last = tf.keras.layers.Conv2D(1, 3, strides=1,
                                 kernel_initializer=initializer)(zero_pad2)  # (bs, 30, 30, 1)
 
     return tf.keras.Model(inputs=[inp, tar], outputs=last)
 
-Discriminator().summary()
-
 discriminator = Discriminator()
 #tf.keras.utils.plot_model(discriminator, show_shapes=True, dpi=64)
+discriminator.summary()
+discriminator.save(model_andor_weight_path+"_discriminator4.h5")
 
-inp[tf.newaxis, ...].shape
+disc_out = discriminator([inp[tf.newaxis, ...], gen_output], training=False)
+#disc_out = discriminator([inp, gen_output], training=False)
+plt.imshow(disc_out[0, ..., -1]#, vmin=-20, vmax=20
+    , cmap='RdBu_r'
+          )
+plt.colorbar()
+print(disc_out.shape)
 
 def discriminator_loss(disc_real_output, disc_generated_output):
     real_loss = loss_object(tf.ones_like(disc_real_output), disc_real_output)
@@ -305,8 +313,6 @@ def generate_images(model, test_input, tar):
         plt.axis('off')
     plt.show()
 
-EPOCHS = 10
-
 model_andor_weight_path = "/home/hgamarro/DeepLearning/JB_space/models/pix2pix/"
 checkpoint_dir = model_andor_weight_path+'logs/training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
@@ -323,7 +329,7 @@ summary_writer = tf.summary.create_file_writer(
 def train_step(input_image, target, epoch):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
         gen_output = generator(input_image, training=True)
-        print(gen_output.shape)
+        #print(gen_output.shape)
         disc_real_output = discriminator([input_image, target], training=True)
         disc_generated_output = discriminator([input_image, gen_output], training=True)
 
@@ -346,14 +352,6 @@ def train_step(input_image, target, epoch):
         tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
         tf.summary.scalar('disc_loss', disc_loss, step=epoch)
 
-
-if not os.path.isfile(model_andor_weight_path+"model_pix2pix_generator_base.h5"):
-	generator.save(model_andor_weight_path+"model_pix2pix_generator_base.h5")
-if not os.path.isfile(model_andor_weight_path+"model_pix2pix_discriminator_base.h5"):
-	discriminator.save(model_andor_weight_path+"model_pix2pix_discriminator_base.h5")
-
-
-
 def Fit(train_ds, epochs, test_ds):
     bs2 = test_ds[0][0][:,:,:,:].shape[0]
     bs1 = len(test_ds)
@@ -362,52 +360,37 @@ def Fit(train_ds, epochs, test_ds):
         start = time.time()
         start1 = datetime.now()
         print("start: " ,start1)
-
-        #display.clear_output(wait=True)
-        for i in np.arange( bs1 ):
-            for j in np.arange( bs2 ):
-                generate_images( generator
-                               # ,tf.cast(test_ds[i][0][tf.newaxis ,j,:,:,:], tf.float32)
-                                #,tf.cast(test_ds[i][1][tf.newaxis ,j,:,:,:], tf.float32)
-                                ,test_ds[i][0][tf.newaxis ,j,...]
-                                ,test_ds[i][1][tf.newaxis ,j,...]
-                                        )
                 
-                # Train
-                #tuple(input_image, target) in zip(train_ds[:][0][j,...]
-                #                               ,train_ds[:][1][j,...]):
-                    #tuple(ele) for ele in lst
-                for inp_mask in train_ds:
-                    for batch in zip(inp_mask[0] , inp_mask[1]):
-                        print('.', end='')
-                        train_step( epoch=j
-                                   , input_image = batch[0][tf.newaxis ,...]
-                                   , target = batch[1][tf.newaxis ,...]
-                                   #, input_image = tf.cast(input_image , tf.float32)#[tf.newaxis ,...]
-                                   #, target = tf.cast(target , tf.float32)#[tf.newaxis ,...]
+        # Train
+        for batch in train_ds:
+            for inp_targ in zip(batch[0] , batch[1]):
+                print('.', end='')
+                train_step( epoch=epoch
+                           , input_image = inp_targ[0][tf.newaxis ,...]
+                           , target = inp_targ[1][tf.newaxis ,...]
                                     )
-                    print("-finished a training batch-")
-                print("\n--------starting next validation image-")
-                checkpoint.save(file_prefix=checkpoint_prefix+"_valimg_"+str(i)+'_batch_'+str(j))
-                    
-            print("\n-----------------------finished a validation batch-")
+                
+            i=random.randint(0,bs1)
+            j=random.randint(0,bs2)
+            generate_images( generator
+                            ,test_ds[i][0][tf.newaxis ,j,:,:,:]
+                            ,test_ds[i][1][tf.newaxis ,j,:,:,:]
+                                    )
+            print("-finished a training batch-")    
+            checkpoint.save(file_prefix=checkpoint_prefix+"_batch_"+str((epoch+1)*32) )
+
         print("\n---------------------------------------------Epoch: ", epoch)
-        checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1))
-        
+        checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_'+str(epoch+1) )
+
         end = datetime.now()
         print("end: " ,end)
         print("\nTime Taken for epoch: %s" % (end-start1))
-        
-        # saving (checkpoint) the model every 20 epochs
-        #if (epoch + 1) % 2 == 0:
-            #checkpoint.save(file_prefix=checkpoint_prefix)
 
-Fit(re_inp, EPOCHS, val_re_inp)
+    # saving (checkpoint) the model every 20 epochs
+    #if (epoch + 1) % 2 == 0:
+        #checkpoint.save(file_prefix=checkpoint_prefix)
 
-
-
-
-
-
-
-
+EPOCHS = 150
+Fit(re_inp
+    , EPOCHS
+    , val_re_inp)
