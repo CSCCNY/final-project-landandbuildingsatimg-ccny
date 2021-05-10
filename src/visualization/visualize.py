@@ -1,6 +1,6 @@
 import matplotlib
 from matplotlib.colors import ListedColormap
-
+import numpy as np
 
 ### History Function
 def plot_history(history):
@@ -48,7 +48,7 @@ def display_results(y_true, y_preds, class_labels):
 
 
 
-def plot_label(mask, labels, col_dict):
+def plot_label(mask, labels, col_dict, ax, fig, colorbar = False):
 	# Let's also design our color mapping: 1s should be plotted in blue, 2s in red, etc...
 	# col_dict={1:"blue",
 	#           2:"red",
@@ -69,16 +69,16 @@ def plot_label(mask, labels, col_dict):
 	## Prepare bins for the normalizer
 	norm_bins = np.sort([*col_dict.keys()]) + 0.5
 	norm_bins = np.insert(norm_bins, 0, np.min(norm_bins) - 1.0)
-	print(norm_bins)
+# 	print(norm_bins)
 	## Make normalizer and formatter
 	norm = matplotlib.colors.BoundaryNorm(norm_bins, len_lab, clip=True)
 	fmt = matplotlib.ticker.FuncFormatter(lambda x, pos: labels[norm(x)])
 	
 	# Plot our figure
-	fig,ax = plt.subplots()
 	im = ax.imshow(mask, cmap=cm, norm=norm)
-	
+    
 	diff = norm_bins[1:] - norm_bins[:-1]
 	tickz = norm_bins[:-1] + diff / 2
-	cb = fig.colorbar(im, format=fmt, ticks=tickz)
+	if colorbar:
+		cb = fig.colorbar(im, format=fmt, ticks=tickz)
 	return ax
