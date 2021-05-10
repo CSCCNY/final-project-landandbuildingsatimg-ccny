@@ -159,11 +159,11 @@ class PrePixer(object):
         self.img_size = img_size
         
         self.data_gen_args = dict(rescale=1./255,
-                     rotation_range=40,
                      horizontal_flip=True)
 
-        self.image_datagen = ImageDataGenerator(**self.data_gen_args)
-        self.mask_datagen = ImageDataGenerator(**self.data_gen_args)
+        self.image_datagen = ImageDataGenerator(rescale=1./255,horizontal_flip=True)
+        
+        self.mask_datagen = ImageDataGenerator(horizontal_flip=True)
 
   # crate a list of batches based on the total file and desired batch size
     def chunk(self, it, size):
@@ -186,7 +186,7 @@ class PrePixer(object):
         # create list of list based on batch size parameter
         chunks = list(self.chunk(file_list, self.chunk_size))
         
-        for idx, meta_files in enumerate(chunks, 1):
+        for idx, meta_files in enumerate(chunks[:-1], 1):
             X_file = []
             y_file = []
             batch_size_i = len(meta_files)
@@ -215,9 +215,15 @@ class PrePixer(object):
             if self.mode == "val":
                 x_file_name = "image_file_{}.npy".format(idx)
                 y_file_name = "label_file_{}.npy".format(idx)
-                np.save(os.path.join(self.out_img_dir, x_file_name), X_file)
+                
+                aaa = np.where((y_file > 0) & (y_file < 1))
+                y_file[aaa] = 1
+#                 print(np.histogram(y_file))
+                
+                np.save(os.path.join(self.out_img_dir, x_file_name), X_file/255.0 )
                 np.save(os.path.join(self.out_mask_dir, y_file_name), y_file)
                 print("Done batch for validation {}/{}".format(idx, len(chunks)))
+
 
           # for train we will have a augmented file of each image
             elif self.mode == "train":
@@ -225,7 +231,7 @@ class PrePixer(object):
                     X_file,
                     shuffle=False,
                     seed=12,
-                    batch_size=32)
+                    batch_size=self.chunk_size)
 
                 aug_x_set = []
                 for aug_x in image_flow:
@@ -237,7 +243,7 @@ class PrePixer(object):
                     y_file,
                     shuffle=False,
                     seed=12,
-                    batch_size=32)
+                    batch_size=self.chunk_size)
 
                 aug_y_set = []
                 for aug_y in mask_flow:
