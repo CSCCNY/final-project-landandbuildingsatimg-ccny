@@ -29,6 +29,7 @@
     - [1](https://medium.com/analytics-vidhya/feature-pyramid-network-for-image-classification-aa6dd22a4844)
     - [2](https://towardsdatascience.com/review-fpn-feature-pyramid-network-object-detection-262fc7482610)
 - [pix2pix](https://www.tensorflow.org/tutorials/generative/pix2pix)
+- [random forest](https://github.com/dgriffiths3/ml_segmentation/blob/master/train.py)
 
 ### <span style="color:gray">Land Classification</span>
 
