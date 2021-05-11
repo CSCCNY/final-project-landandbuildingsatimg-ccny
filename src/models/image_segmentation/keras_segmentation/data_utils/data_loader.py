@@ -29,7 +29,7 @@ class_colors = [(random.randint(0, 255), random.randint(
     0, 255), random.randint(0, 255)) for _ in range(5000)]
 
 
-ACCEPTABLE_IMAGE_FORMATS = [".jpg", ".jpeg", ".png", ".bmp"]
+ACCEPTABLE_IMAGE_FORMATS = [".jpg", ".jpeg", ".png", ".bmp", '.npy']
 ACCEPTABLE_SEGMENTATION_FORMATS = [".png", ".bmp"]
 
 
@@ -265,6 +265,7 @@ def image_segmentation_generator(images_path, segs_path, batch_size,
     while True:
         X = []
         Y = []
+        oth = []
         for _ in range(batch_size):
             if other_inputs_paths is None:
 
@@ -299,13 +300,12 @@ def image_segmentation_generator(images_path, segs_path, batch_size,
                 assert ignore_segs == False , "Not supported yet"
 
                 im, seg, others = next(zipped)
-
                 im = cv2.imread(im, read_image_type)
                 seg = cv2.imread(seg, 1)
-
-                oth = []
+# JM Edit -------------------------------------------------------
+                
                 for f in others:
-                    oth.append(cv2.imread(f, read_image_type))
+                    oth.append(np.load(f))
 
                 if do_augment:
                     if custom_augmentation is None:
@@ -314,24 +314,26 @@ def image_segmentation_generator(images_path, segs_path, batch_size,
                     else:
                         ims, seg[:, :, 0] = custom_augment_seg(im, seg[:, :, 0],
                                                                custom_augmentation, other_imgs=oth)
-                else:
-                    ims = [im]
-                    ims.extend(oth)
+#                 else:
+#                     ims = [im]
+#                     ims.extend(oth)
 
-                oth = []
-                for i, image in enumerate(ims):
-                    oth_im = get_image_array(image, input_width,
-                                             input_height, ordering=IMAGE_ORDERING)
+#                 oth = []
+#                 for i, image in enumerate(ims):
+#                     oth_im = get_image_array(image, input_width,
+#                                              input_height, ordering=IMAGE_ORDERING)
 
-                    if preprocessing is not None:
-                        if isinstance(preprocessing, Sequence):
-                            oth_im = preprocessing[i](oth_im)
-                        else:
-                            oth_im = preprocessing(oth_im)
+#                     if preprocessing is not None:
+#                         if isinstance(preprocessing, Sequence):
+#                             oth_im = preprocessing[i](oth_im)
+#                         else:
+#                             oth_im = preprocessing(oth_im)
 
-                    oth.append(oth_im)
+#                     oth.append(oth_im)
 
-                X.append(oth)
+#                 X.append(oth)
+                X.append(get_image_array(im, input_width,
+                         input_height, ordering=IMAGE_ORDERING))
 
             if not ignore_segs:
                 Y.append(get_segmentation_array(
@@ -340,4 +342,4 @@ def image_segmentation_generator(images_path, segs_path, batch_size,
         if ignore_segs:
             yield np.array(X)
         else:
-            yield np.array(X), np.array(Y)
+            yield np.array(X), np.array(Y), np.array(oth)
