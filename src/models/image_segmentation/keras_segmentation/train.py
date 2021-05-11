@@ -181,7 +181,7 @@ def train(model,
         val_gen = image_segmentation_generator(
             val_images, val_annotations,  val_batch_size,
             n_classes, input_height, input_width, output_height, output_width,
-            other_inputs_paths=other_inputs_paths,
+            other_inputs_paths=None,
             preprocessing=preprocessing, read_image_type=read_image_type)
 
     if callbacks is None and (not checkpoints_path is  None) :
