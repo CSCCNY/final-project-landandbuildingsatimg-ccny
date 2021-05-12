@@ -185,11 +185,12 @@ def create_training_dataset(image_list, label_list):
     X = []
     y = []
 
-    for i, img in enumerate(image_list):
-        print(img.shape)
+    x = len(image_list)
+    for i in range(x):
+        #print(img.shape)
         #img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_gray = np.int64( rgb2gray(img)  )
-        features, labels = create_features(img, img_gray, label_list[i])
+        img_gray = np.int64( rgb2gray(image_list[i])  )
+        features, labels = create_features(image_list[i], img_gray, label_list[i])
         X.append(features)
         y.append(labels)
 
