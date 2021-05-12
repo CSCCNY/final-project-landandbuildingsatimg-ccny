@@ -69,7 +69,6 @@ def train(model,
           # sample_weights = None,
           verify_dataset=True,
           checkpoints_path=None,
-          LR = 0.0001,
           epochs=5,
           batch_size=2,
           validate=False,
@@ -115,12 +114,12 @@ def train(model,
         assert val_annotations is not None
 
     if optimizer_name is not None:
-    	optim = keras.optimizers.Adam(LR)
+    	optim = keras.optimizers.Adam(0.0001)
     	dice_loss = sm.losses.DiceLoss()
     	focal_loss = sm.losses.CategoricalFocalLoss()
     	total_loss = dice_loss + (1 * focal_loss)
     	metrics = [sm.metrics.IOUScore(threshold=0.5), sm.metrics.FScore(threshold=0.5)]
-    	#model.compile(loss=total_loss, optimizer= optim, metrics= metrics) #['categorical_accuracy']
+    	model.compile(loss=total_loss, optimizer= optim, metrics= metrics) #['categorical_accuracy']
 
     if checkpoints_path is not None:
         config_file = checkpoints_path + "_config.json"
@@ -202,14 +201,14 @@ def train(model,
     if callbacks is None:
         callbacks = []
 
-#     if not validate:
-#         nn_model = model.fit(train_gen, steps_per_epoch=steps_per_epoch,
-#                   epochs=epochs, callbacks=callbacks, initial_epoch=initial_epoch) #, sample_weight = sample_weight)
-#     else:
-#         nn_model = model.fit(train_gen,
-#                   steps_per_epoch=steps_per_epoch,
-#                   validation_data=val_gen,
-#                   validation_steps=val_steps_per_epoch,
-#                   epochs=epochs, callbacks=callbacks,
-#                   use_multiprocessing=gen_use_multiprocessing, initial_epoch=initial_epoch) #, sample_weight = sample_weight)
-    return total_loss, optim, metrics,  train_gen,  steps_per_epoch, val_gen, val_steps_per_epoch, epochs, callbacks, gen_use_multiprocessing, initial_epoch
+    if not validate:
+        nn_model = model.fit(train_gen, steps_per_epoch=steps_per_epoch,
+                  epochs=epochs, callbacks=callbacks, initial_epoch=initial_epoch) #, sample_weight = sample_weight)
+    else:
+        nn_model = model.fit(train_gen,
+                  steps_per_epoch=steps_per_epoch,
+                  validation_data=val_gen,
+                  validation_steps=val_steps_per_epoch,
+                  epochs=epochs, callbacks=callbacks,
+                  use_multiprocessing=gen_use_multiprocessing, initial_epoch=initial_epoch) #, sample_weight = sample_weight)
+    return nn_model 
