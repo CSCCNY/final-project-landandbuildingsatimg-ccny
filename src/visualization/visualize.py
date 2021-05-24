@@ -81,4 +81,4 @@ def plot_label(mask, labels, col_dict, ax, fig, colorbar = False):
 	tickz = norm_bins[:-1] + diff / 2
 	if colorbar:
 		cb = fig.colorbar(im, format=fmt, ticks=tickz)
-	return ax
+	return ax, fig
