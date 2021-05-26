@@ -75,10 +75,10 @@ def plot_label(mask, labels, col_dict, ax, fig, colorbar = False):
 	fmt = matplotlib.ticker.FuncFormatter(lambda x, pos: labels[norm(x)])
 	
 	# Plot our figure
-	im = ax.imshow(mask, cmap=cm, norm=norm)
+	im = ax.imshow(mask, cmap=cm, norm=norm, interpolation = 'nearest')
     
 	diff = norm_bins[1:] - norm_bins[:-1]
 	tickz = norm_bins[:-1] + diff / 2
 	if colorbar:
 		cb = fig.colorbar(im, format=fmt, ticks=tickz)
-	return ax, fig
+	return im, fmt, tickz
