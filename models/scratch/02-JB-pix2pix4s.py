@@ -387,7 +387,7 @@ def Fit(train_ds, epochs, test_ds):
         print("end: " ,end='\n')
         print("\nTime Taken for epoch: %s" % (end-start))
            
-    checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
+        checkpoint.save(file_prefix=checkpoint_prefix+'_epoch_batch:'+str(epoch+1)+"_"+str(batch+1) )
 
     # saving (checkpoint) the model every 20 epochs
     #if (epoch + 1) % 2 == 0:
