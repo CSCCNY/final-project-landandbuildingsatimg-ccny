@@ -1,4 +1,6 @@
 ## All filenames should have the following structure in their names:
+Main notebooks are in this folder  
+
 ### category-initial-short_description.ipynb
 ### e.g. 00-JM-Tutorial_1.ipynb
 
@@ -13,4 +15,3 @@
 - Harold Gamarro - HG
 - Juan Pablo Montoya -JM
 - Joe Brian Malubay - JB
-
